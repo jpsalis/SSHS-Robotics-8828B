@@ -78,7 +78,8 @@ task autonomous()
 	AutonomousCodePlaceholderForTesting();
 }
 
-/*---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*
+/*                                                                           */
 /*                              User Control Task                            */
 /*                                                                           */
 /*  This task is used to control your robot during the user control phase of */
