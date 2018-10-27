@@ -93,7 +93,9 @@ task usercontrol()
 
 	bool toggleState = true;
 	int prevButtonState, buttonState;
-	int precision;
+
+	// sets precision multiplier, joystick value is multiplied by this.
+	float mult = 0.5;
 
 	while (true)
 	{
@@ -101,7 +103,10 @@ task usercontrol()
 		SensorValue[yellow] = buttonState = vexRT[Btn8D];
 
 		// easily settable range for driveSpeed
-		if (toggleState) driveSpeed(vexRT[Ch3]* precision, vexRT[Ch2]* precision);
+		if (toggleState) driveSpeed(vexRT[Ch3], vexRT[Ch2]);
+		else             driveSpeed(vexRT[Ch3] * mult, driveSpeed(vexRT[Ch2] * mult);
+
+
 
 		// reverses state of toggle if button is pressed and wasn't pressed in previous loop.
 		if (buttonState && prevButtonState != buttonState)
