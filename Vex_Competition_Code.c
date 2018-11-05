@@ -22,28 +22,12 @@
 //Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
 
-/*---------------------------------------------------------------------------*/
-/*                          Pre-Autonomous Functions                         */
-/*                                                                           */
-/*  You may want to perform some actions before the competition starts.      */
-/*  Do them in the following function.  You must return from this function   */
-/*  or the autonomous and usercontrol tasks will not be started.  This       */
-/*  function is only called once after the cortex has been powered on and    */
-/*  not every time that the robot is disabled.                               */
-/*---------------------------------------------------------------------------*/
-
-
-void driveSpeed(float left, float right)
-{
-	motor[leftFront] = left;
-	motor[leftBack] = left;
-	motor[rightFront] = right;
-	motor[rightBack] = right;
-}
+#define MIN 0.5
 
 
 void pre_auton()
 {
+
 	// Set bStopTasksBetweenModes to false if you want to keep user created tasks
 	// running between Autonomous and Driver controlled modes. You will need to
 	// manage all user created tasks if set to false.
@@ -58,55 +42,41 @@ void pre_auton()
 	// Example: clearing encoders, setting servo positions, ...
 }
 
-/*---------------------------------------------------------------------------*/
-/*                                                                           */
-/*                              Autonomous Task                              */
-/*                                                                           */
-/*  This task is used to control your robot during the autonomous phase of   */
-/*  a VEX Competition.                                                       */
-/*                                                                           */
-/*  You must modify the code to add your own robot specific commands here.   */
-/*---------------------------------------------------------------------------*/
+
+
+// function defined by user that takes two parameters, left and right. changes value of motor port given in square braces.
+void move(float left, float right) {
+	motor[leftFront] = left;
+	motor[leftBack] = left;
+	motor[rightFront] = right;
+	motor[rightBack] = right;
+}
 
 task autonomous()
 {
-	// ..........................................................................
-	// Insert user code here.
-	// ..........................................................................
-
 	// Remove this function call once you have "real" code.
 	AutonomousCodePlaceholderForTesting();
 }
 
-/*---------------------------------------------------------------------------*
-/*                                                                           */
-/*                              User Control Task                            */
-/*                                                                           */
-/*  This task is used to control your robot during the user control phase of */
-/*  a VEX Competition.                                                       */
-/*                                                                           */
-/*  You must modify the code to add your own robot specific commands here.   */
-/*---------------------------------------------------------------------------*/
-
 task usercontrol()
 {
 
-	bool toggleState = true;
-	int prevButtonState, buttonState;
+        bool toggleState;
+	int prevButtonState;
 
-	// sets precision multiplier, joystick value is multiplied by this.
-	float mult = 0.5;
+	int buttonState;
+
 
 	while (true)
 	{
 		// sets yellow LED to buttonState for current loop of code, which is set by the state of Btn8D.
 		SensorValue[yellow] = buttonState = vexRT[Btn8D];
 
-		// easily settable range for driveSpeed
-		if (toggleState) driveSpeed(vexRT[Ch3], vexRT[Ch2]);
-		else             driveSpeed(vexRT[Ch3] * mult, driveSpeed(vexRT[Ch2] * mult);
-
-
+		// easily settable range for move
+		if (toggleState) {
+                    move((vexRT[Ch3] * 0.7) + (vexRT[Ch4] * 0.3), (vexRT[Ch3] * 0.7) - (vexRT[Ch2] * 0.3);
+                }
+		else move(vexRT[Ch3], vexRT[Ch2]);
 
 		// reverses state of toggle if button is pressed and wasn't pressed in previous loop.
 		if (buttonState && prevButtonState != buttonState)
@@ -114,7 +84,7 @@ task usercontrol()
 			SensorValue[red] = toggleState = !toggleState;
 		}
 
-		// sets prevButtonState to curr. button state. Used
+		// sets prevButtonState to curr. button state.
 		prevButtonState = buttonState;
 	}
 }
