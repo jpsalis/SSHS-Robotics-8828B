@@ -74,7 +74,7 @@ task usercontrol()
 
 		// easily settable range for move
 		if (toggleState) {
-                    move((vexRT[Ch3] * 0.7) + (vexRT[Ch4] * 0.3), (vexRT[Ch3] * 0.7) - (vexRT[Ch2] * 0.3);
+                    move((vexRT[Ch3] * 0.7) + (vexRT[Ch4] * 0.3), (vexRT[Ch3] * 0.7) - (vexRT[Ch2] * 0.3));
                 }
 		else move(vexRT[Ch3], vexRT[Ch2]);
 
