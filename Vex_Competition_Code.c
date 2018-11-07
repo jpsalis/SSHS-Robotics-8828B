@@ -39,7 +39,7 @@ void pre_auton()
 
 
 // function defined by user that takes two parameters, left and right. changes value of motor port given in square braces.
-void move(float left, float right) {
+void drive(float left, float right) {
 	// sets motor on motor[int] to given parameter
 	motor[leftFront] = left;
 	motor[leftBack] = left;
@@ -70,10 +70,10 @@ task usercontrol()
 
 		// left joystick control for both, uses max to determine
 		if (toggleState)
-			move(vexRT[Ch3] * MAX + vexRT[Ch4] * (1- MAX), vexRT[Ch3] * MAX - vexRT[Ch4] * (1 - MAX));
+			drive(vexRT[Ch3] * MAX + vexRT[Ch4] * (1- MAX), vexRT[Ch3] * MAX - vexRT[Ch4] * (1 - MAX));
 
 		else
-			move((vexRT[Ch3] + vexRT[Ch4]) * MIN, (vexRT[Ch3] - vexRT[Ch4]) * MIN );
+			drive((vexRT[Ch3] + vexRT[Ch4]) * MIN, (vexRT[Ch3] - vexRT[Ch4]) * MIN );
 
 
 		// reverses state of toggle if button is pressed and wasn't pressed in previous loop.
