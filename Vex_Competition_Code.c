@@ -38,7 +38,7 @@ void pre_auton()
 }
 
 
-// function defined by user that takes two parameters, left and right. changes value of motor port given in square braces.
+// function that takes two parameters, left and right. changes value of motor port given in square braces.
 void drive(float left, float right) {
 	// sets motor on motor[int] to given parameter
 	motor[leftFront] = left;
@@ -53,6 +53,7 @@ task autonomous()
 	// Remove this function call once you have "real" code.
 	AutonomousCodePlaceholderForTesting();
 }
+
 
 task usercontrol()
 {
