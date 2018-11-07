@@ -22,35 +22,31 @@
 //Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
 
-#define MIN 0.5
+/* USER DEFINED: */
 
+// MAX increases the joystick response of Ch3 and reduces Ch4 proportionally
+// so the value of the motor never exceeds 127. range: 0 - 1.
+#define MAX 0.7
+
+// MIN is the multiplier for high state of toggle. When active, the values
+// of Ch3 and Ch4 are combined and multiplied by MIN.
+#define MIN 0.5
 
 void pre_auton()
 {
-
-	// Set bStopTasksBetweenModes to false if you want to keep user created tasks
-	// running between Autonomous and Driver controlled modes. You will need to
-	// manage all user created tasks if set to false.
 	bStopTasksBetweenModes = true;
-
-	// Set bDisplayCompetitionStatusOnLcd to false if you don't want the LCD
-	// used by the competition include file, for example, you might want
-	// to display your team name on the LCD in this function.
-	// bDisplayCompetitionStatusOnLcd = false;
-
-	// All activities that occur before the competition starts
-	// Example: clearing encoders, setting servo positions, ...
 }
-
 
 
 // function defined by user that takes two parameters, left and right. changes value of motor port given in square braces.
 void move(float left, float right) {
+	// sets motor on motor[int] to given parameter
 	motor[leftFront] = left;
 	motor[leftBack] = left;
 	motor[rightFront] = right;
 	motor[rightBack] = right;
 }
+
 
 task autonomous()
 {
@@ -60,29 +56,29 @@ task autonomous()
 
 task usercontrol()
 {
-
-        bool toggleState;
-	int prevButtonState;
-
+	// used for drive speed
+	bool toggleState;
+	// prevents state of button used from changing mid-loop.
 	int buttonState;
-
+	// circumvents rapid toggling on each loop by ensuring last loop user wasn't holding the button.
+	int prevButtonState;
 
 	while (true)
 	{
-		// sets yellow LED to buttonState for current loop of code, which is set by the state of Btn8D.
+		// sets LED on port "yellow" to buttonState, which is set by Btn8D.
 		SensorValue[yellow] = buttonState = vexRT[Btn8D];
 
-		// easily settable range for move
-		if (toggleState) {
-                    move((vexRT[Ch3] * 0.7) + (vexRT[Ch4] * 0.3), (vexRT[Ch3] * 0.7) - (vexRT[Ch2] * 0.3));
-                }
-		else move(vexRT[Ch3], vexRT[Ch2]);
+		// left joystick control for both, uses max to determine
+		if (toggleState)
+			move(vexRT[Ch3] * MAX + vexRT[Ch4] * (1- MAX), vexRT[Ch3] * MAX - vexRT[Ch4] * (1 - MAX));
+
+		else
+			move((vexRT[Ch3] + vexRT[Ch4]) * MIN, (vexRT[Ch3] - vexRT[Ch4]) * MIN );
+
 
 		// reverses state of toggle if button is pressed and wasn't pressed in previous loop.
 		if (buttonState && prevButtonState != buttonState)
-		{
 			SensorValue[red] = toggleState = !toggleState;
-		}
 
 		// sets prevButtonState to curr. button state.
 		prevButtonState = buttonState;
