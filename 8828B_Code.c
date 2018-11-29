@@ -21,7 +21,7 @@
 
 //Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
-
+#include "8828B_Code_Includes.c"
 
 #define MIN 0.5
 
@@ -46,12 +46,6 @@ void pre_auton()
 
 
 // function defined by user that takes two parameters, left and right. changes value of motor port given in square braces.
-void move(float left, float right) {
-	motor[leftFront] = left;
-	motor[leftBack] = left;
-	motor[rightFront] = right;
-	motor[rightBack] = right;
-}
 
 task autonomous()
 {
@@ -59,25 +53,22 @@ task autonomous()
 	AutonomousCodePlaceholderForTesting();
 }
 
+
 task usercontrol()
 {
 
 	bool toggleState;
 	int prevButtonState;
 	int buttonState;
-
-
+	//startTask(LEDControl);
 	while (true)
 	{
 		// sets yellow LED to buttonState for current loop of code, which is set by the state of Btn8D.
 		SensorValue[yellow] = buttonState = vexRT[Btn8D];
 
 		// easily settable range for move
-		if (toggleState) {
-			move((vexRT[Ch3] * 0.5) + (vexRT[Ch4] * 0.5), (vexRT[Ch3] * 0.5) - (vexRT[Ch4] * 0.5));
-		}
-		else move((vexRT[Ch3] * 0.6) + (vexRT[Ch4] * 0.6), (vexRT[Ch3] * 0.6) - (vexRT[Ch4] * 0.6));
 
+		driveControl(toggleState);
 		// reverses state of toggle if button is pressed and wasn't pressed in previous loop.
 		if (buttonState && prevButtonState != buttonState)
 		{
