@@ -67,8 +67,11 @@ task usercontrol()
 		SensorValue[yellow] = buttonState = vexRT[Btn8D];
 
 		// easily settable range for move
+		if (toggleState)
+			move((vexRT[Ch3] * 0.5) + (vexRT[Ch4] * 0.5), (vexRT[Ch3] * 0.5) - (vexRT[Ch4] * 0.5));
+		else
+			move((vexRT[Ch3] * 0.6) + (vexRT[Ch4] * 0.6), (vexRT[Ch3] * 0.6) - (vexRT[Ch4] * 0.6));
 
-		driveControl(toggleState);
 		// reverses state of toggle if button is pressed and wasn't pressed in previous loop.
 		if (buttonState && prevButtonState != buttonState)
 		{

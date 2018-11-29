@@ -6,12 +6,3 @@ void move(float left, float right)
 	motor[rightFront] = right;
 	motor[rightBack] = right;
 }
-
-
-void driveControl(int toggleState)
-{
-		if (toggleState)
-			move((vexRT[Ch3] * 0.5) + (vexRT[Ch4] * 0.5), (vexRT[Ch3] * 0.5) - (vexRT[Ch4] * 0.5));
-		else
-			move((vexRT[Ch3] * 0.6) + (vexRT[Ch4] * 0.6), (vexRT[Ch3] * 0.6) - (vexRT[Ch4] * 0.6));
-}
