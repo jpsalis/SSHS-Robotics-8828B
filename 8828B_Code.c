@@ -23,7 +23,9 @@
 #include "Vex_Competition_Includes.c"
 #include "8828B_Code_Includes.c"
 
-#define MIN 0.5
+// Constants defined as multiplier for drive speed when toggle is pressed
+#define LOW 0.3
+#define HIGH 0.5
 
 
 void pre_auton()
@@ -56,21 +58,20 @@ task autonomous()
 
 task usercontrol()
 {
-
 	bool toggleState;
 	int prevButtonState;
 	int buttonState;
-	//startTask(LEDControl);
 	while (true)
 	{
 		// sets yellow LED to buttonState for current loop of code, which is set by the state of Btn8D.
 		SensorValue[yellow] = buttonState = vexRT[Btn8D];
 
-		// easily settable range for move
-		if (toggleState)
-			move((vexRT[Ch3] * 0.5) + (vexRT[Ch4] * 0.5), (vexRT[Ch3] * 0.5) - (vexRT[Ch4] * 0.5));
+		// Starts in low speed, if toggled enters high speed range.
+		if (!toggleState)
+			move((vexRT[Ch3] * LOW) + (vexRT[Ch4] * LOW), (vexRT[Ch3] * LOW) - (vexRT[Ch4] * LOW));
 		else
-			move((vexRT[Ch3] * 0.6) + (vexRT[Ch4] * 0.6), (vexRT[Ch3] * 0.6) - (vexRT[Ch4] * 0.6));
+			move((vexRT[Ch3] * HIGH) + (vexRT[Ch4] * HIGH), (vexRT[Ch3] * HIGH) - (vexRT[Ch4] * HIGH));
+
 
 		// reverses state of toggle if button is pressed and wasn't pressed in previous loop.
 		if (buttonState && prevButtonState != buttonState)
