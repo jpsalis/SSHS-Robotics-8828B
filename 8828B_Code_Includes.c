@@ -6,3 +6,8 @@ void move(float left, float right)
 	motor[rightFront] = right;
 	motor[rightBack] = right;
 }
+void lift(float speed)
+{
+	motor[liftMotorBottom] = speed;
+	motor[liftMotorTop] = speed;
+}
