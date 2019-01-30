@@ -28,8 +28,8 @@
 #include "8828B_Code_Includes.c"
 
 // Constants defined as multiplier for drive speed when toggle is pressed
-#define LOW 0.3
-#define HIGH 0.6
+#define LOW 0.35
+#define HIGH 0.7
 
 
 void pre_auton()
@@ -75,9 +75,9 @@ task usercontrol()
 
 		/* CODE FOR SINGLE JOYSTICK CONTROL W. TOGGLE */
 		if (!toggleState)
-			move((vexRT[Ch3] * LOW) + (vexRT[Ch4] * LOW), (vexRT[Ch3] * LOW) - (vexRT[Ch4] * LOW));
+			move(vexRT[Ch3] * LOW, vexRT[Ch2] * LOW);
 		else
-			move((vexRT[Ch3] * HIGH) + (vexRT[Ch4] * HIGH), (vexRT[Ch3] * HIGH) - (vexRT[Ch4] * HIGH));
+			move(vexRT[Ch3] * HIGH, vexRT[Ch2] * HIGH);
 
 		motor[claw] = vexRT[AccelX]/2;
 
