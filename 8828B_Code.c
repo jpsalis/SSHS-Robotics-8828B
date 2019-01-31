@@ -73,12 +73,14 @@ task usercontrol()
 	{
 		SensorValue[yellow] = buttonState = vexRT[Btn8D];
 
-		/* CODE FOR SINGLE JOYSTICK CONTROL W. TOGGLE */
+		/* CODE FOR DUAL JOYSTICK CONTROL W. TOGGLE */
 		if (!toggleState)
 			move(vexRT[Ch3] * LOW, vexRT[Ch2] * LOW);
 		else
 			move(vexRT[Ch3] * HIGH, vexRT[Ch2] * HIGH);
 
+		// In this variant, the claw is controlled by the accelerometer in the X direction.
+		// May have to add deadzone in the future for ease of use.
 		motor[claw] = vexRT[AccelX]/2;
 
 
