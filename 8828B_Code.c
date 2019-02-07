@@ -1,7 +1,9 @@
-#pragma config(Sensor, dgtl1,  ShaftEnc,       sensorQuadEncoder)
+#pragma config(Sensor, in1,    autoMode,       sensorPotentiometer)
+#pragma config(Sensor, dgtl1,  liftEnc,        sensorQuadEncoder)
 #pragma config(Sensor, dgtl5,  green,          sensorLEDtoVCC)
 #pragma config(Sensor, dgtl6,  yellow,         sensorLEDtoVCC)
 #pragma config(Sensor, dgtl7,  red,            sensorLEDtoVCC)
+#pragma config(Sensor, dgtl12, currentDriver,  sensorTouch)
 #pragma config(Motor,  port2,           rightBack,     tmotorVex393_MC29, openLoop, reversed, driveRight)
 #pragma config(Motor,  port3,           rightFront,    tmotorVex393_MC29, openLoop, reversed, driveRight)
 #pragma config(Motor,  port4,           leftBack,      tmotorVex393_MC29, openLoop, driveLeft)
@@ -47,6 +49,8 @@ void pre_auton()
 
 	// All activities that occur before the competition starts
 	// Example: clearing encoders, setting servo positions, ...
+		SensorValue[green] = SensorValue[currentDriver];
+
 }
 
 
@@ -57,7 +61,7 @@ task autonomous()
 {
 	// Remove this function call once you have "real" code.
 	AutonomousCodePlaceholderForTesting();
-	SensorValue[ShaftEnc] = 0;
+	SensorValue[liftEnc] = 0;
 }
 
 
@@ -69,35 +73,83 @@ task usercontrol()
 	int prevButtonState;
 	//buttonState: set to reference button, prevents value from changing inside loop
 	int buttonState;
-	while (true)
+
+
+	/* CODE FOR SAM */
+	if(!SensorValue[currentDriver])
 	{
-		SensorValue[yellow] = buttonState = vexRT[Btn8D];
-
-		/* SINGLE JOYSTICK CONTROL W. TOGGLE */
-		if (!toggleState)
-			move((vexRT[Ch3] * LOW) + (vexRT[Ch4] * LOW), (vexRT[Ch3] * LOW) - (vexRT[Ch4] * LOW));
-		else
-			move((vexRT[Ch3] * HIGH) + (vexRT[Ch4] * HIGH), (vexRT[Ch3] * HIGH) - (vexRT[Ch4] * HIGH));
-
-		// claw is controlled by left and right on right joystick value divided by 2.
-		motor[claw] = vexRT[Ch1]/2;
-
-
-		if(vexRT[Btn6U])
-			lift(127);
-		else if(vexRT[Btn6D])
-			lift(-65);
-		else
-			lift(0);
-
-
-		// reverses state of toggle if button is pressed and wasn't pressed in previous loop.
-		if (buttonState && prevButtonState != buttonState)
+		while (true)
 		{
-			SensorValue[red] = toggleState = !toggleState;
+			SensorValue[yellow] = buttonState = vexRT[Btn8D];
+
+			/* SINGLE JOYSTICK CONTROL W. TOGGLE */
+			if (!toggleState)
+				move((vexRT[Ch3] * LOW) + (vexRT[Ch4] * LOW), (vexRT[Ch3] * LOW) - (vexRT[Ch4] * LOW));
+			else
+				move((vexRT[Ch3] * HIGH) + (vexRT[Ch4] * HIGH), (vexRT[Ch3] * HIGH) - (vexRT[Ch4] * HIGH));
+
+			// claw is controlled by left and right on right joystick value divided by 2.
+
+			motor[claw] = vexRT[Ch1]/2;
+
+
+			if(vexRT[Btn6U])
+				lift(127);
+			else if(vexRT[Btn6D])
+				lift(-65);
+			else
+				lift(0);
+
+
+			// reverses state of toggle if button is pressed and wasn't pressed in previous loop.
+			if (buttonState && prevButtonState != buttonState)
+			{
+				SensorValue[red] = toggleState = !toggleState;
+			}
+
+			// sets prevButtonState to curr. button state.
+			prevButtonState = buttonState;
 		}
 
-		// sets prevButtonState to curr. button state.
-		prevButtonState = buttonState;
+	}
+
+
+
+	/* CODE FOR OWEN */
+	else
+	{
+		while (true)
+		{
+			SensorValue[yellow] = buttonState = vexRT[Btn8D];
+
+			/* CODE FOR DUAL JOYSTICK CONTROL W. TOGGLE */
+			if (!toggleState)
+				move(vexRT[Ch3] * LOW, vexRT[Ch2] * LOW);
+			else
+				move(vexRT[Ch3] * HIGH, vexRT[Ch2] * HIGH);
+
+			// In this variant, the claw is controlled by the accelerometer in the X direction.
+			// May have to add deadzone in the future for ease of use.
+			clawDeadzone(vexRT[AccelX]/2, 7);
+
+
+
+			if(vexRT[Btn6U])
+				lift(127);
+			else if(vexRT[Btn6D])
+				lift(-70);
+			else
+				lift(0);
+
+
+			// reverses state of toggle if button is pressed and wasn't pressed in previous loop.
+			if (buttonState && prevButtonState != buttonState)
+			{
+				SensorValue[red] = toggleState = !toggleState;
+			}
+
+			// sets prevButtonState to curr. button state.
+			prevButtonState = buttonState;
+		}
 	}
 }
