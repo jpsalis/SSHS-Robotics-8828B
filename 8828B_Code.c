@@ -128,12 +128,12 @@ task usercontrol()
 			else
 				move(vexRT[Ch3] * HIGH, vexRT[Ch2] * HIGH);
 
-			// In this variant, the claw is controlled by the accelerometer in the X direction.
-			// May have to add deadzone in the future for ease of use.
+			// In this variant, the claw is controlled by the accelerometer in the X direction. 
+			// there is a deadzone of 7 in either direction.
 			clawDeadzone(vexRT[AccelX]/2, 7);
 
 
-
+			// calls lift function with speed desired
 			if(vexRT[Btn6U])
 				lift(127);
 			else if(vexRT[Btn6D])
