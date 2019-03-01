@@ -5,7 +5,6 @@
 #pragma config(Sensor, dgtl5,  green,          sensorLEDtoVCC)
 #pragma config(Sensor, dgtl6,  yellow,         sensorLEDtoVCC)
 #pragma config(Sensor, dgtl7,  red,            sensorLEDtoVCC)
-#pragma config(Sensor, dgtl8,  Solenoid,       sensorDigitalOut)
 #pragma config(Sensor, dgtl12, currentDriver,  sensorTouch)
 #pragma config(Sensor, I2C_1,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
 #pragma config(Sensor, I2C_2,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
@@ -36,7 +35,7 @@
 
 // Constants defined as multiplier for drive speed when toggle is pressed
 #define LOW 0.35
-#define HIGH 0.7
+#define HIGH 0.9
 // max height of lift in counts, relate to degrees.
 #define MAXHEIGHT 675
 // these constants are used to multiply the turning speeds in autonomous for testing,
@@ -119,16 +118,16 @@ task autonomous()
 	switch (startPoint)
 	{
 	case 1:
-		moveDistance(1850);
+		moveDistance(1850, 70);
 		wait1Msec(200);
 		turn(-90 * teamMult);
 		wait1Msec(200);
-		moveDistance(1900);
+		moveDistance(1875, 100);
 		break;
 
 		//drives in reverse towards the flag
 	case 2:
-		moveDistance(-3000);
+		moveDistance(-3000, 70);
 		break;
 	}
 }
@@ -137,7 +136,8 @@ task autonomous()
 task usercontrol()
 {
 	// holds state of toggle for joystick control.
-	bool toggleState;
+	bool toggleState = true;
+	SensorValue[red] = 1;
 	// used to prevent rapid flipping of toggleState, set at end of loop
 	int prevButtonState;
 	//buttonState: set to reference button, prevents value from changing inside loop
@@ -160,7 +160,7 @@ task usercontrol()
 			// claw is controlled by left and right on right joystick value divided by 2.
 
 			motor[claw] = vexRT[Ch1]/2;
-			SensorValue[solenoid] = vexRT[Btn8L];
+
 
 			if(vexRT[Btn6U] && SensorValue[liftEnc] < MAXHEIGHT)
 				lift(127);
@@ -202,8 +202,14 @@ task usercontrol()
 
 			// In this variant, the claw is controlled by the accelerometer in the X direction.
 			// May have to add deadzone in the future for ease of use.
-			clawDeadzone(vexRT[AccelX]/2, 7);
-			SensorValue[solenoid] = vexRT[Btn8L];
+			if(vexRT[Btn5U])
+				motor[claw] = 90;
+			else if(vexRT[Btn5D])
+				motor[claw] = -90;
+			else
+				motor[claw] = 0;
+
+
 
 
 			if(vexRT[Btn6U]  && SensorValue[liftEnc] < MAXHEIGHT)

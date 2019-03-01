@@ -9,27 +9,27 @@ void move(float left, float right)
 
 void turn (int deg)
 {
-	deg = deg * 7.3;
+	deg = deg * 7.25;
 	nMotorEncoder[leftBack] = 0;
 	nMotorEncoder[rightBack] = 0;
 	if(deg > 0)
 	{
 		while(nMotorEncoder[leftBack] < deg)
 		{
-			move(45, -45);
+			move(55, -55);
 		}
 	}
 	else if (deg < 0)
 	{
 		while(nMotorEncoder[leftBack] > deg)
 		{
-			move(-45, 45);
+			move(-55, 55);
 		}
 	}
 	move(0, 0);
 }
 
-void moveDistance(int position)
+void moveDistance(int position, int speed)
 {
 	nMotorEncoder[leftBack] = 0;
 	nMotorEncoder[rightBack] = 0;
@@ -37,14 +37,14 @@ void moveDistance(int position)
 	{
 		while(nMotorEncoder[leftBack] < position && nMotorEncoder[rightBack] < position)
 		{
-			move(70, 70);
+			move(speed, speed);
 		}
 	}
 	else if (position < 0)
 	{
 		while(nMotorEncoder[leftBack] > position  && nMotorEncoder[rightBack] > position)
 		{
-			move(-70, -70);
+			move(-speed, -speed);
 		}
 	}
 	move(0, 0);
