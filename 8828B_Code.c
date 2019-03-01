@@ -5,6 +5,7 @@
 #pragma config(Sensor, dgtl5,  green,          sensorLEDtoVCC)
 #pragma config(Sensor, dgtl6,  yellow,         sensorLEDtoVCC)
 #pragma config(Sensor, dgtl7,  red,            sensorLEDtoVCC)
+#pragma config(Sensor, dgtl8,  Solenoid,       sensorDigitalOut)
 #pragma config(Sensor, dgtl12, currentDriver,  sensorTouch)
 #pragma config(Sensor, I2C_1,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
 #pragma config(Sensor, I2C_2,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
@@ -159,7 +160,7 @@ task usercontrol()
 			// claw is controlled by left and right on right joystick value divided by 2.
 
 			motor[claw] = vexRT[Ch1]/2;
-
+			SensorValue[solenoid] = vexRT[Btn8L];
 
 			if(vexRT[Btn6U] && SensorValue[liftEnc] < MAXHEIGHT)
 				lift(127);
@@ -202,7 +203,7 @@ task usercontrol()
 			// In this variant, the claw is controlled by the accelerometer in the X direction.
 			// May have to add deadzone in the future for ease of use.
 			clawDeadzone(vexRT[AccelX]/2, 7);
-
+			SensorValue[solenoid] = vexRT[Btn8L];
 
 
 			if(vexRT[Btn6U]  && SensorValue[liftEnc] < MAXHEIGHT)
